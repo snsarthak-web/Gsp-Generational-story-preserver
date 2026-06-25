@@ -33,7 +33,7 @@ python app.py
 | **Family Tree** | Visual tree: parents → subject → children, plus siblings |
 | **Photo upload** | Drag-and-drop photos, included in the Legacy Book |
 | **Legacy Book PDF** | Premium print-ready PDF: navy/gold cover, chapters, timeline, family tree, photos |
-| **Demo Mode** | Pre-loaded story for S.N. Sarthak — great for demos and vivas |
+| **Demo Mode** | Pre-loaded story for K.H. Eklavya — great for demos and vivas |
 
 ---
 
