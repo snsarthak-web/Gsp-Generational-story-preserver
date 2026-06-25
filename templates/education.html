@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Education — GSP{% endblock %}
+
+{% block content %}
+<div class="page">
+  {% include "_steps.html" with context %}
+
+  <div class="page-header">
+    <p class="eyebrow">Chapter 2 · Education</p>
+    <h1>Years of Learning</h1>
+    <p>Schools, teachers, degrees — and the lessons that shaped the mind and heart.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+
+      <!-- Small questions ABOVE -->
+      <div class="quick-questions">
+        <p class="qs-heading">Quick Details</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_school">Which school did you attend first?</label>
+            <input type="text" id="q_school" name="q_school" maxlength="100"
+              value="{{ story.q_school or '' }}" placeholder="e.g. St. Mary's Primary School">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_teacher">Who was your favourite teacher?</label>
+            <input type="text" id="q_teacher" name="q_teacher" maxlength="80"
+              value="{{ story.q_teacher or '' }}" placeholder="e.g. Mr. Patnaik, Mrs. Sharma">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_subject">Which subject did you enjoy the most?</label>
+            <input type="text" id="q_subject" name="q_subject" maxlength="80"
+              value="{{ story.q_subject or '' }}" placeholder="e.g. Mathematics, History, Science">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_achievement">What achievement are you most proud of?</label>
+            <input type="text" id="q_achievement" name="q_achievement" maxlength="120"
+              value="{{ story.q_achievement or '' }}" placeholder="e.g. Won the debate competition in Class 10">
+          </div>
+        </div>
+      </div>
+
+      <hr class="gold-rule">
+
+      <!-- Main textarea -->
+      <div class="form-group">
+        <label class="form-label" for="education">Tell us about your education journey and school life.</label>
+        <p class="form-hint" style="margin-bottom:0.6rem;">Include years and place names — they'll automatically appear on your life timeline.</p>
+        <textarea id="education" name="education" class="large" maxlength="3000"
+          placeholder="Describe your schooling — which schools you attended, your college life, exams, achievements, friendships, the moments that shaped your future…">{{ story.education or '' }}</textarea>
+        <p class="char-count form-hint text-right"><span id="cCount">{{ (story.education or '')|length }}</span> / 3000</p>
+      </div>
+
+      <div class="voice-btn-wrap">
+        <button type="button" class="voice-btn" onclick="GSP.voice.toggle('education')">
+          🎙️ <span id="voiceLabel">Dictate</span>
+        </button>
+        <span class="voice-status" id="voiceStatus"></span>
+      </div>
+
+      <div class="chapter-nav">
+        <a href="{{ url_for('childhood', user_id=user.id) }}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Save & Continue →</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var ta = document.getElementById('education');
+var cc = document.getElementById('cCount');
+if(ta && cc){ ta.addEventListener('input', function(){ cc.textContent = ta.value.length; }); }
+</script>
+{% endblock %}

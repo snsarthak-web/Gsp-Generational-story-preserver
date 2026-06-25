@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Childhood — GSP{% endblock %}
+
+{% block content %}
+<div class="page">
+  {% include "_steps.html" with context %}
+
+  <div class="page-header">
+    <p class="eyebrow">Chapter 1 · Childhood</p>
+    <h1>Early Years & First Memories</h1>
+    <p>Every great story begins at the beginning. Share the moments that made you who you are.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+
+      <!-- Small questions ABOVE the main textarea -->
+      <div class="quick-questions">
+        <p class="qs-heading">Quick Details</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_friend">Who was your closest childhood friend?</label>
+            <input type="text" id="q_friend" name="q_friend" maxlength="50"
+              value="{{ story.q_friend or '' }}" placeholder="e.g. Raju, Meena…">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_game">What was your favourite childhood game?</label>
+            <input type="text" id="q_game" name="q_game" maxlength="50"
+              value="{{ story.q_game or '' }}" placeholder="e.g. Gilli-danda, Hide & seek…">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_festival">What was your favourite festival or celebration?</label>
+            <input type="text" id="q_festival" name="q_festival" maxlength="100"
+              value="{{ story.q_festival or '' }}" placeholder="e.g. Diwali, Durga Puja, Eid…">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_nickname">What nickname did your family call you?</label>
+            <input type="text" id="q_nickname" name="q_nickname" maxlength="50"
+              value="{{ story.q_nickname or '' }}" placeholder="e.g. Chotu, Guddu, Pinky…">
+          </div>
+        </div>
+      </div>
+
+      <hr class="gold-rule">
+
+      <!-- Main big story textarea -->
+      <div class="form-group">
+        <label class="form-label" for="childhood">
+          Tell us about your childhood and early life.
+        </label>
+        <p class="form-hint" style="margin-bottom:0.6rem;">Share your memories, friends, games, family, school life, and any special moments you remember.</p>
+        <textarea id="childhood" name="childhood" class="large" maxlength="3000"
+          placeholder="Write freely here — where you grew up, your home, the sounds and smells you remember, your family, your earliest joys and adventures…">{{ story.childhood or '' }}</textarea>
+        <p class="char-count form-hint text-right"><span id="cCount">{{ (story.childhood or '')|length }}</span> / 3000</p>
+      </div>
+
+      <div class="voice-btn-wrap">
+        <button type="button" class="voice-btn" onclick="GSP.voice.toggle('childhood')">
+          🎙️ <span id="voiceLabel">Dictate</span>
+        </button>
+        <span class="voice-status" id="voiceStatus"></span>
+      </div>
+
+      <div class="chapter-nav">
+        <a href="{{ url_for('create_story') }}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Save & Continue →</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var ta = document.getElementById('childhood');
+var cc = document.getElementById('cCount');
+if(ta && cc){ ta.addEventListener('input', function(){ cc.textContent = ta.value.length; }); }
+</script>
+{% endblock %}

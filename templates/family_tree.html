@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Family Tree — {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <p class="eyebrow">Chapter Four · Family Tree</p>
+    <h1>Roots & Branches</h1>
+    <p>The people who shaped, and were shaped by, {{ user.name }}'s life.</p>
+  </div>
+
+  <div class="card">
+    {% if story %}
+      {% set has_parents = story.father_name or story.mother_name %}
+      {% set has_spouse  = story.spouse_name %}
+      {% set children_list = story.children.split(',') | map('trim') | list if story.children else [] %}
+      {% set siblings_list = story.siblings.split(',') | map('trim') | list if story.siblings else [] %}
+
+      <div class="tree-wrap">
+        <!-- Parents row -->
+        {% if has_parents %}
+        <div class="tree-row">
+          {% if story.father_name %}
+            <div class="tree-node">
+              <div class="node-name">{{ story.father_name }}</div>
+              <div class="node-role">Father</div>
+            </div>
+          {% endif %}
+          {% if story.mother_name %}
+            <div class="tree-node">
+              <div class="node-name">{{ story.mother_name }}</div>
+              <div class="node-role">Mother</div>
+            </div>
+          {% endif %}
+        </div>
+        <div class="tree-connector-wrap"></div>
+        {% endif %}
+
+        <!-- Subject row -->
+        <div class="tree-row">
+          {% if siblings_list %}
+            {% for sib in siblings_list[:2] %}
+              <div class="tree-node">
+                <div class="node-name">{{ sib }}</div>
+                <div class="node-role">Sibling</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          <div class="tree-node you">
+            <div class="node-name">{{ user.name }}</div>
+            <div class="node-role">{{ user.occupation or 'Subject' }}</div>
+          </div>
+          {% if has_spouse %}
+            <div class="tree-node">
+              <div class="node-name">{{ story.spouse_name }}</div>
+              <div class="node-role">Spouse</div>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Children row -->
+        {% if children_list %}
+          <div class="tree-connector-wrap"></div>
+          <div class="tree-row">
+            {% for child in children_list %}
+              <div class="tree-node">
+                <div class="node-name">{{ child }}</div>
+                <div class="node-role">Child</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if story.family_notes %}
+        <hr class="gold-rule">
+        <p class="card-label">Family Notes</p>
+        <p class="card-value">{{ story.family_notes }}</p>
+      {% endif %}
+
+    {% else %}
+      <p class="text-muted">No family information yet. <a href="{{ url_for('family', user_id=user.id) }}">Add it here</a>.</p>
+    {% endif %}
+
+    <hr class="gold-rule">
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <a href="{{ url_for('timeline', user_id=user.id) }}" class="btn btn-ghost btn-sm">← Timeline</a>
+      <a href="{{ url_for('export_pdf', user_id=user.id) }}" class="btn btn-primary btn-sm">📄 Export Legacy Book</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

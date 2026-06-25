@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}GSP — Generational Story Preserver{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+
+  <!-- LOGO — placeholder: replace logo-placeholder.png in static/images/ with your own logo -->
+  <a class="navbar-brand" href="{{ url_for('home') }}">
+    <div class="logo-placeholder-wrap">
+      <img
+        src="{{ url_for('static', filename='images/logo-placeholder.png') }}"
+        alt="GSP Logo"
+        class="navbar-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <!-- Shown only when logo image is missing -->
+      <div class="logo-placeholder-box">
+        <span class="logo-ph-icon">🌳</span>
+      </div>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">GSP</span>
+      <span class="brand-sub">Generational Story Preserver</span>
+    </div>
+  </a>
+
+  <ul class="navbar-links">
+    <li><a href="{{ url_for('home') }}"         {% if request.endpoint=='home'         %}class="active"{% endif %}>Home</a></li>
+    <li><a href="{{ url_for('create_story') }}" {% if request.endpoint=='create_story' %}class="active"{% endif %}>Create Story</a></li>
+    <li><a href="{{ url_for('demo_story') }}"   {% if request.endpoint=='demo_story'   %}class="active"{% endif %}>Demo Story</a></li>
+    {% if user_id is defined and user_id %}
+      <li><a href="{{ url_for('biography',   user_id=user_id) }}" {% if request.endpoint=='biography'   %}class="active"{% endif %}>Biography</a></li>
+      <li><a href="{{ url_for('timeline',    user_id=user_id) }}" {% if request.endpoint=='timeline'    %}class="active"{% endif %}>Timeline</a></li>
+      <li><a href="{{ url_for('family_tree', user_id=user_id) }}" {% if request.endpoint=='family_tree' %}class="active"{% endif %}>Family Tree</a></li>
+      <li>
+        <a href="{{ url_for('ai_legacy', user_id=user_id) }}"
+           class="nav-ai-link {% if request.endpoint=='ai_legacy' %}active{% endif %}">
+          ✨ AI Legacy <span class="nav-new-badge">NEW</span>
+        </a>
+      </li>
+      <li><a href="{{ url_for('export_pdf', user_id=user_id) }}" class="btn-nav-cta">📄 Export PDF</a></li>
+    {% else %}
+      <li><a href="{{ url_for('create_story') }}" class="btn-nav-cta">+ Start Story</a></li>
+    {% endif %}
+  </ul>
+
+  <div class="navbar-user">
+    <div class="user-avatar-mini">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="5.5" r="3" stroke="#D4AF37" stroke-width="1.4"/>
+        <path d="M2 14c0-3 2.686-4.5 6-4.5s6 1.5 6 4.5" stroke="#D4AF37" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="user-label">Welcome,&nbsp;<strong style="color:var(--ivory)">Guest</strong></span>
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="opacity:.5">
+      <path d="M2 4l3.5 3.5L9 4" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+  </div>
+</nav>
+
+<!-- Progress bar (chapter pages only) -->
+{% if progress is defined %}
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" style="width:{{ progress }}%"></div>
+</div>
+{% endif %}
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    <div class="flash-wrap" id="flashWrap">
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ '✓' if cat=='success' else '✗' }} {{ msg }}</div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(function(){
+        var fw=document.getElementById('flashWrap');
+        if(fw){fw.style.opacity='0';fw.style.transition='opacity 0.5s';setTimeout(function(){fw&&fw.remove();},500);}
+      },3500);
+    </script>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

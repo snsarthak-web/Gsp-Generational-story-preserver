@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Wisdom — GSP{% endblock %}
+
+{% block content %}
+<div class="page">
+  {% include "_steps.html" with context %}
+
+  <div class="page-header">
+    <p class="eyebrow">Chapter 5 · Wisdom ⭐</p>
+    <h1>A Life's Greatest Lesson</h1>
+    <p>Share a moment that changed the way you see life — a story worth passing down forever.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST" id="wisdomForm">
+
+      <!-- Small questions ABOVE -->
+      <div class="quick-questions">
+        <p class="qs-heading">Quick Details</p>
+        <div class="form-group">
+          <label class="form-label" for="life_lesson">What value is most important to you?</label>
+          <input type="text" id="life_lesson" name="life_lesson"
+            value="{{ story.life_lesson or '' }}"
+            placeholder="e.g. Family · Honesty · Kindness · Respect · Courage">
+          <p class="form-hint">This becomes your core life lesson in the Legacy Book.</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_future_advice">What advice would you give future generations?</label>
+            <input type="text" id="q_future_advice" name="q_future_advice" maxlength="200"
+              value="{{ story.q_future_advice or '' }}"
+              placeholder="e.g. Create memories with loved ones, not just wealth">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_learned_late">One thing you wish you'd learned earlier?</label>
+            <input type="text" id="q_learned_late" name="q_learned_late" maxlength="150"
+              value="{{ story.q_learned_late or '' }}"
+              placeholder="e.g. That it's okay to ask for help">
+          </div>
+        </div>
+      </div>
+
+      <hr class="gold-rule">
+
+      <!-- Main wisdom story textarea -->
+      <div class="form-group">
+        <label class="form-label" for="wisdom_corrected">
+          Tell a story or experience that changed the way you see life. ⭐
+        </label>
+        <p class="form-hint" style="margin-bottom:0.6rem;">
+          This is where real stories live — a trek, an argument that became a lesson, a loss that brought clarity, a moment of unexpected beauty. Write it like you'd tell it to your grandchild.
+        </p>
+        <textarea id="wisdom_corrected" name="wisdom_corrected" class="large" maxlength="3000"
+          placeholder="Example: I took my parents to Harishchandragad for their anniversary instead of a big party. We saw a Brocken Spectre — our shadows haloed in light on the clouds below. Their faces said everything. I realised memories shared together last longer than anything money can buy…">{{ story.wisdom_corrected or '' }}</textarea>
+        <p class="char-count form-hint text-right"><span id="cCount">{{ (story.wisdom_corrected or '')|length }}</span> / 3000</p>
+      </div>
+
+      <div class="voice-btn-wrap">
+        <button type="button" class="voice-btn" onclick="GSP.voice.toggle('wisdom_corrected')">
+          🎙️ <span id="voiceLabel">Dictate</span>
+        </button>
+        <span class="voice-status" id="voiceStatus"></span>
+      </div>
+
+      <!-- AI Analyse -->
+      <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+        <button type="button" class="btn btn-ghost btn-sm" id="analyseBtn" onclick="GSP.analyseWisdom({{ user.id }})">
+          ✨ Analyse with AI
+        </button>
+        <span id="analyseStatus" class="text-muted" style="font-size:0.82rem;"></span>
+      </div>
+
+      <div id="wisdomResult" style="display:none; margin-top:1.5rem;">
+        <hr class="gold-rule">
+        <p class="card-label">Detected Emotions</p>
+        <div class="emotion-tags" id="emotionTags"></div>
+        <p class="card-label mt-2">Life Lesson</p>
+        <div class="lesson-box" id="lessonBox"></div>
+        <p class="card-label mt-2">Wisdom Summary</p>
+        <p class="biography-text" id="wisdomSummary" style="margin-top:0.5rem;"></p>
+      </div>
+
+      <div class="chapter-nav">
+  <a href="{{ url_for('family', user_id=user.id) }}" class="btn btn-ghost">← Back</a>
+  <button type="submit" class="btn btn-primary">Save & View Biography →</button>
+</div>
+
+<!-- AI Legacy shortcut button -->
+<div style="margin-top: 1rem; text-align: center;">
+  <div style="margin-bottom: 0.6rem;">
+    <span style="font-size: .75rem; color: #94A3B8;">
+      ✓ All chapters filled? Go straight to full AI analysis:
+    </span>
+  </div>
+  <a href="{{ url_for('ai_legacy', user_id=user.id) }}"
+     class="btn btn-primary"
+     style="width: 100%; justify-content: center; font-size: 1rem; padding: 0.9rem; background: linear-gradient(135deg, #92400E, #D4AF37);">
+    ✨ Generate AI Legacy Now →
+  </a>
+  <p style="font-size: .72rem; color: #94A3B8; margin-top: 0.5rem;">
+    Generates biography · timeline · life lessons · emotions · legacy summary
+  </p>
+</div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var ta = document.getElementById('wisdom_corrected');
+var cc = document.getElementById('cCount');
+if(ta && cc){ ta.addEventListener('input', function(){ cc.textContent = ta.value.length; }); }
+
+GSP.analyseWisdom = function(userId) {
+  var text = document.getElementById('wisdom_corrected').value;
+  var btn  = document.getElementById('analyseBtn');
+  var stat = document.getElementById('analyseStatus');
+  if (!text.trim()) { stat.textContent = 'Please write your wisdom story first.'; return; }
+  btn.disabled = true;
+  stat.innerHTML = '<span class="spinner"></span> Analysing…';
+  fetch('/story/' + userId + '/wisdom-analysis', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({text: text})
+  })
+  .then(r => r.json())
+  .then(function(data) {
+    stat.textContent = 'Done!';
+    btn.disabled = false;
+    var res = document.getElementById('wisdomResult');
+    res.style.display = 'block';
+    var tags = document.getElementById('emotionTags');
+    tags.innerHTML = '';
+    (data.emotions||[]).forEach(function(e){
+      var span = document.createElement('span');
+      span.className = 'emotion-tag'; span.textContent = e; tags.appendChild(span);
+    });
+    if (data.life_lesson) {
+      document.getElementById('lessonBox').textContent = data.life_lesson;
+      document.getElementById('life_lesson').value = data.life_lesson;
+    }
+    if (data.wisdom_summary) document.getElementById('wisdomSummary').textContent = data.wisdom_summary;
+    if (data.corrected_story) document.getElementById('wisdom_corrected').value = data.corrected_story;
+  })
+  .catch(function(){ stat.textContent = 'Error — please try again.'; btn.disabled = false; });
+};
+</script>
+{% endblock %}

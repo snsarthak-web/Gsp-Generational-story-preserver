@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% block title %}GSP — Preserve Your Family Legacy{% endblock %}
+
+{% block content %}
+
+<!-- ================================================================
+  HERO — FULL SCREEN background image, text overlaid on top
+  To change the background: replace static/images/hero-bg.jpg
+  ================================================================ -->
+<section class="hero-full">
+
+  <!-- ★ BACKGROUND IMAGE (full screen) ─────────────────────────
+       Replace static/images/hero-bg.jpg with your own photo.
+       Recommended: vintage photo album, family portraits, old diary.
+       Size: at least 1920×900px for best quality.
+  ──────────────────────────────────────────────────────────────── -->
+  <img
+    src="{{ url_for('static', filename='images/hero-bg.png') }}"
+    alt="Hero background"
+    class="hero-bg-full"
+    id="heroBgImg">
+
+  <!-- Dark gradient overlay — makes text sharp and readable -->
+  <div class="hero-overlay"></div>
+
+  <!-- Hero content — sits on top of background -->
+  <div class="hero-content">
+    <p class="hero-eyebrow">Generational Story Preserver</p>
+    <h1 class="hero-title">
+      Preserve <em class="gold-italic">Memories.</em><br>
+      Preserve <em class="gold-italic">Legacies.</em>
+    </h1>
+    <p class="hero-sub">
+      Capture your life stories, photos and voice memories<br>
+      and create a lasting legacy for future generations.
+    </p>
+    <div class="hero-actions">
+      <a href="{{ url_for('create_story') }}" class="btn btn-hero-primary">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M7.5 2l5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Create Your Story
+      </a>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-hero-outline">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="5.5" r="2.8" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 13.5c0-3 2.686-4.5 6-4.5s6 1.5 6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        View Demo Story
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================================================================
+  STATS BAR — animated counters
+================================================================ -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-icon-e">📖</span>
+    <div><div class="stat-num" data-target="125">0+</div><div class="stat-lbl">Stories Preserved</div></div>
+  </div>
+  <span class="stat-sep"></span>
+  <div class="stat-item">
+    <span class="stat-icon-e">🖼️</span>
+    <div><div class="stat-num" data-target="850">0+</div><div class="stat-lbl">Photos Uploaded</div></div>
+  </div>
+  <span class="stat-sep"></span>
+  <div class="stat-item">
+    <span class="stat-icon-e">🎙️</span>
+    <div><div class="stat-num" data-target="320">0+</div><div class="stat-lbl">Audio Recorded</div></div>
+  </div>
+  <span class="stat-sep"></span>
+  <div class="stat-item">
+    <span class="stat-icon-e">🏛️</span>
+    <div><div class="stat-num" data-target="90">0+</div><div class="stat-lbl">Legacies Created</div></div>
+  </div>
+</div>
+
+<!-- ================================================================
+  CREATE STORY FLOW  +  DEMO PREVIEW
+================================================================ -->
+<div class="home-wrap">
+  <div class="home-two-col">
+
+    <!-- Story Flow -->
+    <div class="card home-card">
+      <p class="sec-title gold">Create Story Flow</p>
+      <div class="flow-row">
+        {% for icon,lbl,desc in [
+          ('👦','Childhood','Share your early memories'),
+          ('🎓','Education','Your school, college & more'),
+          ('💼','Career','Your work journey and achievements'),
+          ('🏠','Family','Your family, roots and relations'),
+          ('🌟','Wisdom','Life lessons and memories')
+        ] %}
+        <div class="flow-step">
+          <div class="flow-ring">{{ icon }}</div>
+          <div class="flow-num">{{ loop.index }}</div>
+          <div class="flow-lbl">{{ lbl }}</div>
+          <div class="flow-dsc">{{ desc }}</div>
+        </div>
+        {% if not loop.last %}<div class="flow-conn"><div class="flow-dash"></div></div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Demo Preview -->
+    <div class="card home-card">
+      <p class="sec-title gold">Demo Story Preview</p>
+
+      <div class="demo-profile-row">
+        <!-- ★ DEMO AVATAR PLACEHOLDER ──────────────────────────────────
+             To add K.H. Eklavya's photo: place a file named
+             demo_avatar.jpg inside static/images/
+             Recommended size: 200×200px, square crop.
+        ──────────────────────────────────────────────────────────────── -->
+        <div class="demo-ava-wrap">
+          <img
+            src="{{ url_for('static', filename='images/demo_avatar.jpg') }}"
+            alt="K.H. Eklavya"
+            class="demo-ava-img"
+            onerror="this.style.display='none'; document.getElementById('demoAvaFb').style.display='flex';">
+          <div class="demo-ava-fb" id="demoAvaFb">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="5.5" stroke="#D4AF37" stroke-width="1.5"/><path d="M4 26c0-5.523 4.477-8 10-8s10 2.477 10 8" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="demo-ava-label">Add Photo</span>
+          </div>
+        </div>
+
+        <div class="demo-info">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;">
+            <span class="demo-name">K.H. Eklavya</span>
+            <span class="demo-pill">DEMO</span>
+          </div>
+          <div class="demo-meta">✈️ Travel Creator</div>
+          <div class="demo-meta">📍 Odisha, India</div>
+        </div>
+      </div>
+
+      <div class="demo-chapters">
+        {% for lbl,cnt in [('Childhood Stories','6 Stories'),('Education Journey','3 Stories'),
+          ('Career Journey','8 Stories'),('Family Moments','5 Stories'),('Life Lessons','4 Stories')] %}
+        <div class="demo-ch"><span class="demo-tick">✓</span>{{ lbl }}<span class="demo-cnt">{{ cnt }}</span></div>
+        {% endfor %}
+      </div>
+
+      <div class="demo-stats-grid">
+        <div class="demo-stat-box"><span>📷</span><span>Photos</span><strong>12</strong></div>
+        <div class="demo-stat-box"><span>🎙️</span><span>Audio</span><strong>3</strong></div>
+        <div class="demo-stat-box"><span>🕰️</span><span>Timeline</span><strong class="ok">Ready</strong></div>
+        <div class="demo-stat-box"><span>📖</span><span>Biography</span><strong class="ok">Ready</strong></div>
+      </div>
+
+      <a href="{{ url_for('demo_story') }}" class="btn btn-primary w-full mt-1" style="justify-content:center;">
+        Explore Demo Story →
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================
+  AI POWERED FEATURES — AI Legacy card highlighted
+================================================================ -->
+<div class="home-wrap">
+  <p class="sec-title gold">AI Powered Features</p>
+  <div class="ai-grid">
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);">✨</div>
+      <strong>AI Biography</strong>
+      <p>AI creates a beautiful biography from your stories.</p>
+    </div>
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#1E3A5F,#2563EB);">📅</div>
+      <strong>Timeline Generator</strong>
+      <p>AI generates a timeline of important life events.</p>
+    </div>
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#064E3B,#059669);">💡</div>
+      <strong>Life Lessons</strong>
+      <p>AI extracts life lessons and values from your experiences.</p>
+    </div>
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#7F1D1D,#DC2626);">💗</div>
+      <strong>Emotion Detection</strong>
+      <p>AI detects emotions from your stories and memories.</p>
+    </div>
+    <!-- ★ AI Legacy — FEATURED CARD (highlighted gold) -->
+    <div class="ai-card ai-card-featured">
+      <div class="ai-new-badge">NEW</div>
+      <div class="ai-icon ai-icon-xl" style="background:linear-gradient(135deg,#92400E,#D4AF37);">✨</div>
+      <strong class="ai-feat-title">AI LEGACY GENERATOR</strong>
+      <p>Generate a complete legacy book using all your stories.</p>
+      <a href="{{ url_for('create_story') }}" class="btn btn-primary btn-sm mt-1" style="width:100%;justify-content:center;">Try It →</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#1C1917,#78716C);">Aa</div>
+      <strong>Grammar & Style</strong>
+      <p>AI improves grammar, style and readability of your stories.</p>
+    </div>
+    <div class="ai-card">
+      <div class="ai-icon" style="background:linear-gradient(135deg,#0C4A6E,#0284C7);">📄</div>
+      <strong>Legacy Book (PDF)</strong>
+      <p>AI compiles everything into a beautiful legacy book.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+  WHY PRESERVE  |  TIMELINE PREVIEW  |  FAMILY TREE PREVIEW
+================================================================ -->
+<div class="home-wrap">
+  <div class="three-col">
+
+    <div class="card">
+      <p class="sec-title gold">Why Preserve Stories?</p>
+      <div class="why-list">
+        <div class="why-row"><span class="why-ico">⏳</span><p><strong>Memories fade.</strong> Even the closest moments blur over years.</p></div>
+        <div class="why-row"><span class="why-ico">📷</span><p><strong>Photos get lost.</strong> Hard drives fail, albums deteriorate.</p></div>
+        <div class="why-row"><span class="why-ico">🌊</span><p><strong>Stories disappear.</strong> Without preservation, they're gone forever.</p></div>
+      </div>
+      <div class="why-quote-block">
+        <p class="why-quote">"GSP helps preserve family history for future generations – a story that lives forever."</p>
+        <div class="why-seal">GSP</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="sec-title gold">Legacy Timeline Preview</p>
+      <div class="prev-timeline">
+        {% for yr,ico,ttl,det in [
+          ('2002','🎒','School Started','Village primary school, Odisha'),
+          ('2009','🎓','Engineering Degree','Mechanical Engineering with Honours'),
+          ('2009','⚓','Merchant Navy','Sailed to Singapore, Dubai, Rotterdam'),
+          ('2012','💼','International Business','New career path begins'),
+          ('2023','✈️','Travel Creator','Sharing journeys with the world'),
+        ] %}
+        <div class="prev-ev">
+          <div class="prev-yr">{{ yr }}</div>
+          <div class="prev-dot"></div>
+          <div class="prev-body"><span class="prev-ico">{{ ico }}</span><div><div class="prev-ttl">{{ ttl }}</div><div class="prev-det">{{ det }}</div></div></div>
+        </div>
+        {% endfor %}
+      </div>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-ghost btn-sm w-full mt-1" style="justify-content:center;">See Full Timeline in Demo →</a>
+    </div>
+
+    <div class="card">
+      <p class="sec-title gold">Family Tree Preview</p>
+      <div class="tree-prev">
+        <div class="tree-prev-row"><div class="tp-node tp-ancestor">Grandfather<br><small>1920 – 1998</small></div></div>
+        <div class="tp-line-down"></div>
+        <div class="tree-prev-row">
+          <div class="tp-node">Father<br><small>(1950 – )</small></div>
+          <div class="tp-hline"></div>
+          <div class="tp-node">Mother<br><small>(1955 – )</small></div>
+        </div>
+        <div class="tp-line-down"></div>
+        <div class="tree-prev-row"><div class="tp-node tp-you">You</div></div>
+      </div>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-ghost btn-sm w-full mt-1" style="justify-content:center;">View Full Family Tree →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================
+  YOUR STORIES — with generated card images
+================================================================ -->
+<div class="home-wrap">
+  <p class="sec-title gold">Your Stories</p>
+  <div class="stories-grid">
+    {% for slug,lbl,meta,bar,img_f in [
+      ('childhood','Childhood','Early memories & friends','#F59E0B','story_childhood.jpg'),
+      ('education','Education','Schools & learning','#8B5CF6','story_education.jpg'),
+      ('career','Career','Work & achievements','#3B82F6','story_career.jpg'),
+      ('family','Family','Roots & relationships','#EC4899','story_family.jpg'),
+      ('wisdom','Wisdom & Lessons',"Life's greatest insights",'#10B981','story_wisdom.jpg'),
+    ] %}
+    <a href="{{ url_for('create_story') }}" class="story-card">
+      <div class="story-img-wrap">
+        <img src="{{ url_for('static', filename='images/'+img_f) }}"
+             alt="{{ lbl }}" class="story-img"
+             onerror="this.style.display='none';">
+        <div class="story-img-icon">{{ ['👦','🎓','💼','🏠','🌅'][loop.index0] }}</div>
+      </div>
+      <div class="story-body">
+        <strong class="story-lbl">{{ lbl }}</strong>
+        <p class="story-meta">{{ meta }}</p>
+        <div class="story-prog-row">
+          <div class="story-bar"><div class="story-fill" style="width:0%;background:{{ bar }};"></div></div>
+          <span class="story-pct">0%</span>
+        </div>
+        <div class="story-info-row">
+          <span class="story-count">0 Stories added</span>
+          <span class="story-updated">Not started</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ================================================================
+  AI GENERATED OUTPUTS PREVIEW
+================================================================ -->
+<div class="home-wrap">
+  <p class="sec-title gold">AI Generated Outputs</p>
+  <div class="ai-outputs-grid">
+    <div class="card ai-out-card">
+      <div class="ai-out-header">
+        <span class="ai-out-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);">✨</span>
+        <strong>AI Biography (Preview)</strong>
+      </div>
+      <p class="ai-out-text">K.H. Eklavya's journey is a remarkable story of courage, self-belief and love for nature. From serving in the Merchant Navy and traveling across the world to becoming a successful travel creator, his life reflects passion and purpose. He believes the most valuable treasures are the memories we create with our loved ones…</p>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-primary btn-sm w-full mt-1" style="justify-content:center;">Read Full Biography →</a>
+    </div>
+    <div class="card ai-out-card">
+      <div class="ai-out-header">
+        <span class="ai-out-icon" style="background:linear-gradient(135deg,#1E3A5F,#2563EB);">📅</span>
+        <strong>AI Timeline (Preview)</strong>
+      </div>
+      <div class="ai-tl-list">
+        {% for yr,ev in [('2009','Completed Mechanical Engineering'),('2009','Joined Merchant Navy'),
+          ('2011','Returned Home'),('2012','Got New Job after Struggle'),
+          ('2019','International Business Professional'),('2023','Full-time Travel Creator')] %}
+        <div class="ai-tl-row"><span class="ai-tl-yr">{{ yr }}</span><span class="ai-tl-dot"></span><span class="ai-tl-ev">{{ ev }}</span></div>
+        {% endfor %}
+      </div>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-primary btn-sm w-full mt-1" style="justify-content:center;">View Full Timeline →</a>
+    </div>
+    <div class="card ai-out-card">
+      <div class="ai-out-header">
+        <span class="ai-out-icon" style="background:linear-gradient(135deg,#064E3B,#059669);">💡</span>
+        <strong>Life Lesson Extracted by AI</strong>
+      </div>
+      <div class="ai-lesson-quote">Beautiful memories are more valuable than expensive celebrations.</div>
+      <div class="ai-out-emotions">
+        {% for e in ['❤️ Love','😊 Joy','🙏 Gratitude','🌄 Wonder'] %}
+        <span class="emo-chip">{{ e }}</span>{% endfor %}
+      </div>
+      <a href="{{ url_for('demo_story') }}" class="btn btn-primary btn-sm w-full mt-1" style="justify-content:center;">View All Lessons →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+  EXPORT BANNER
+================================================================ -->
+<div class="home-wrap">
+  <div class="export-banner card">
+    <div class="export-text">
+      <p class="sec-title gold" style="margin-bottom:.3rem;">Export Your Legacy</p>
+      <p class="export-desc">Create a beautiful legacy book containing your stories, photos, timeline and life lessons.</p>
+    </div>
+    <div class="export-mid">
+      <div class="export-pdf-icon">📄</div>
+      <div><strong style="color:var(--ivory);font-size:.95rem;">Legacy Book (PDF)</strong><p style="color:var(--muted);font-size:.77rem;margin-top:.1rem;">Complete story in PDF format</p></div>
+    </div>
+    <a href="{{ url_for('create_story') }}" class="btn btn-primary" style="white-space:nowrap;padding:.9rem 1.6rem;">Generate Legacy Book (PDF) →</a>
+  </div>
+</div>
+
+<!-- ================================================================
+  LEGACY QUOTE
+================================================================ -->
+<div class="home-wrap">
+  <div class="legacy-quote-banner">
+    <div class="lq-inner">
+      <span class="lq-open">"</span>
+      <p class="lq-text">Stories are the bridge between generations.<br><em>Preserve them before they become memories alone.</em></p>
+      <span class="lq-close">"</span>
+    </div>
+    <div class="lq-footer">✦ &nbsp; ✦ &nbsp; ✦</div>
+  </div>
+</div>
+
+<!-- ================================================================
+  TRUST BAR + FOOTER
+================================================================ -->
+<div class="trust-bar">
+  <div class="trust-item"><span>🛡️</span><div><strong>Secure & Private</strong><p>Your data is safe with us</p></div></div>
+  <div class="trust-item"><span>🤖</span><div><strong>AI-Powered</strong><p>Advanced AI for better results</p></div></div>
+  <div class="trust-item"><span>✨</span><div><strong>Easy to Use</strong><p>Simple and beautiful interface</p></div></div>
+  <div class="trust-item"><span>👨‍👩‍👧‍👦</span><div><strong>For Generations</strong><p>A legacy for your loved ones</p></div></div>
+</div>
+<footer class="site-footer">
+  <span>© 2025 GSP – Generational Story Preserver</span>
+  <span>Preserve Today, Inspire Tomorrow ❤️</span>
+  <span>Made with ❤️ for Families</span>
+</footer>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Animated counters
+(function(){
+  var done=false;
+  function run(){
+    if(done)return; done=true;
+    document.querySelectorAll('.stat-num[data-target]').forEach(function(el){
+      var t=parseInt(el.dataset.target),c=0,s=Math.max(1,Math.ceil(t/55));
+      var iv=setInterval(function(){c=Math.min(c+s,t);el.textContent=c+'+';if(c>=t)clearInterval(iv);},28);
+    });
+  }
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(e){if(e[0].isIntersecting)run();},{threshold:0.3});
+    var sb=document.querySelector('.stats-bar');
+    if(sb)obs.observe(sb);
+  } else { setTimeout(run,600); }
+})();
+</script>
+{% endblock %}

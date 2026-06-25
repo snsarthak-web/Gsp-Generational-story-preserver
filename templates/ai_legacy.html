@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}AI Legacy — {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header text-center">
+    <p class="eyebrow">✨ AI Legacy Generator</p>
+    <h1>Generate Your Complete Legacy</h1>
+    <p>Generate a complete biography, timeline, life lessons and emotional insights from all your preserved stories — in one click.</p>
+  </div>
+
+  <!-- Summary of what's been filled -->
+  <div class="legacy-readiness">
+    {% set chapters = [
+      ('Childhood',  story.childhood),
+      ('Education',  story.education),
+      ('Career',     story.career),
+      ('Family',     story.family_notes),
+      ('Wisdom',     story.wisdom_corrected),
+    ] %}
+    {% for label, val in chapters %}
+    <div class="readiness-item {{ 'ready' if val else 'empty' }}">
+      <span class="readiness-icon">{{ '✓' if val else '○' }}</span>
+      <span>{{ label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Generate button -->
+  <div class="text-center" style="margin: 2.5rem 0;">
+    <button class="btn btn-primary btn-generate" id="generateBtn" onclick="GSP.generateLegacy({{ user.id }})">
+      <span id="generateBtnInner">✨ Generate Legacy Book</span>
+    </button>
+    <p class="form-hint" style="margin-top:0.75rem;" id="generateHint">
+      Uses AI to analyse all your chapters together in a single pass.
+    </p>
+  </div>
+
+  <!-- Results (hidden until generated) -->
+  <div id="legacyResults" style="display:none;">
+
+    <!-- Biography -->
+    <div class="card legacy-section" id="secBiography">
+      <div class="legacy-section-header">
+        <span class="legacy-sec-icon">📖</span>
+        <div>
+          <p class="card-label">AI Biography</p>
+          <h2 style="font-size:1.3rem;">{{ user.name }}</h2>
+        </div>
+      </div>
+      <div class="biography-text" id="biographyText"></div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card legacy-section" id="secTimeline">
+      <div class="legacy-section-header">
+        <span class="legacy-sec-icon">🕰️</span>
+        <div><p class="card-label">Life Timeline</p><h2 style="font-size:1.3rem;">Milestones</h2></div>
+      </div>
+      <div class="timeline" id="timelineList"></div>
+    </div>
+
+    <!-- Life Lessons + Values side by side -->
+    <div class="legacy-two-col">
+      <div class="card legacy-section">
+        <div class="legacy-section-header">
+          <span class="legacy-sec-icon">💡</span>
+          <div><p class="card-label">Life Lessons</p></div>
+        </div>
+        <ul class="lesson-list" id="lessonList"></ul>
+      </div>
+      <div class="card legacy-section">
+        <div class="legacy-section-header">
+          <span class="legacy-sec-icon">🌟</span>
+          <div><p class="card-label">Core Values</p></div>
+        </div>
+        <div class="emotion-tags" id="valuesList"></div>
+      </div>
+    </div>
+
+    <!-- Emotions -->
+    <div class="card legacy-section">
+      <div class="legacy-section-header">
+        <span class="legacy-sec-icon">❤️</span>
+        <div><p class="card-label">Emotions Reflected</p></div>
+      </div>
+      <div class="emotions-grid" id="emotionsList"></div>
+    </div>
+
+    <!-- Final Legacy -->
+    <div class="card legacy-section legacy-final">
+      <div class="legacy-section-header">
+        <span class="legacy-sec-icon">🏛️</span>
+        <div><p class="card-label">Final Legacy</p><h2 style="font-size:1.1rem;">For Future Generations</h2></div>
+      </div>
+      <div class="legacy-summary-box" id="legacySummary"></div>
+    </div>
+
+    <!-- Export button -->
+    <div class="text-center" style="margin-top:2rem; padding-bottom:2rem;">
+      <a href="{{ url_for('export_pdf', user_id=user.id) }}" class="btn btn-primary" style="font-size:1rem; padding:1rem 2.5rem;">
+        📄 Export Legacy Book PDF
+      </a>
+    </div>
+
+  </div><!-- /legacyResults -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+GSP.generateLegacy = function(userId) {
+  var btn  = document.getElementById('generateBtn');
+  var hint = document.getElementById('generateHint');
+  btn.disabled = true;
+  document.getElementById('generateBtnInner').innerHTML = '<span class="spinner"></span> Generating…';
+  hint.textContent = 'AI is reading all your chapters together. This may take 10–20 seconds…';
+
+  fetch('/story/' + userId + '/ai-legacy/generate', { method:'POST',
+    headers:{'Content-Type':'application/json'}, body:'{}' })
+  .then(r => r.json())
+  .then(function(d) {
+    btn.disabled = false;
+    document.getElementById('generateBtnInner').innerHTML = '✨ Regenerate';
+    hint.textContent = 'Legacy generated! Scroll down to explore.';
+
+    // Show results container
+    var res = document.getElementById('legacyResults');
+    res.style.display = 'block';
+    res.scrollIntoView({ behavior:'smooth', block:'start' });
+
+    // Biography
+    var bioEl = document.getElementById('biographyText');
+    bioEl.innerHTML = '';
+    (d.biography||'').split('\n').forEach(function(p){
+      if(p.trim()){ var el=document.createElement('p'); el.textContent=p.trim(); bioEl.appendChild(el); }
+    });
+
+    // Timeline
+    var tlEl = document.getElementById('timelineList');
+    tlEl.innerHTML = '';
+    (d.timeline||[]).forEach(function(ev){
+      tlEl.innerHTML += '<div class="timeline-item"><div class="timeline-dot"></div>'
+        + (ev.year ? '<div class="timeline-year">'+ev.year+'</div>' : '')
+        + '<div class="timeline-title">'+(ev.icon||'')+(ev.icon?' ':'')+ev.title+'</div>'
+        + (ev.detail ? '<div class="timeline-detail">'+ev.detail+'</div>' : '')
+        + '</div>';
+    });
+
+    // Life Lessons
+    var llEl = document.getElementById('lessonList');
+    llEl.innerHTML = '';
+    (d.life_lessons||[]).forEach(function(l){
+      llEl.innerHTML += '<li class="lesson-item">'+l+'</li>';
+    });
+
+    // Values
+    var vlEl = document.getElementById('valuesList');
+    vlEl.innerHTML = '';
+    (d.values||[]).forEach(function(v){
+      vlEl.innerHTML += '<span class="emotion-tag">'+v+'</span>';
+    });
+
+    // Emotions
+    var emEl = document.getElementById('emotionsList');
+    emEl.innerHTML = '';
+    (d.emotions||[]).forEach(function(e){
+      emEl.innerHTML += '<div class="emotion-card"><span class="emotion-emoji">'+e.emoji+'</span><span class="emotion-label">'+e.label+'</span></div>';
+    });
+
+    // Legacy summary
+    document.getElementById('legacySummary').textContent = d.legacy_summary || '';
+  })
+  .catch(function(err){
+    btn.disabled = false;
+    document.getElementById('generateBtnInner').innerHTML = '✨ Generate Legacy Book';
+    hint.textContent = 'Error — please try again. ' + err.message;
+  });
+};
+</script>
+{% endblock %}

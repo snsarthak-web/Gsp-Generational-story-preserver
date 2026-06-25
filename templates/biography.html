@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Biography — {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <p class="eyebrow">Chapter One · Biography <span class="ai-badge">✨ AI</span></p>
+    <h1>{{ user.name }}</h1>
+    {% if user.birth_year or user.birth_place or user.occupation %}
+      <p>
+        {% if user.birth_year %}Born {{ user.birth_year }}{% endif %}
+        {% if user.birth_place %} · {{ user.birth_place }}{% endif %}
+        {% if user.occupation %} · {{ user.occupation }}{% endif %}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="biography-text">
+      {% if story.biography %}
+        {% for para in story.biography.split('\n') %}
+          {% if para.strip() %}
+            <p>{{ para.strip() }}</p>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">No biography generated yet.</p>
+      {% endif %}
+    </div>
+
+    <hr class="gold-rule">
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+      <form method="POST" action="{{ url_for('biography_regenerate', user_id=user.id) }}">
+        <button type="submit" class="btn btn-ghost btn-sm">↻ Regenerate</button>
+      </form>
+      <a href="{{ url_for('timeline', user_id=user.id) }}" class="btn btn-primary btn-sm">View Timeline →</a>
+      <a href="{{ url_for('export_pdf', user_id=user.id) }}" class="btn btn-ghost btn-sm">📄 Export PDF</a>
+    </div>
+  </div>
+
+  <!-- Photo upload section -->
+  <div class="card" style="margin-top:2rem;">
+    <p class="card-label">Photo Keepsakes</p>
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('photoInput').click()">
+      <div style="font-size:2rem;">📷</div>
+      <p>Click or drag photos here to add to the Legacy Book</p>
+    </div>
+    <input type="file" id="photoInput" accept="image/*" multiple style="display:none"
+           onchange="GSP.uploadPhotos({{ user.id }}, this.files)">
+    <div id="photoGrid" class="photo-grid" style="margin-top:1rem;"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+GSP.uploadPhotos = function(userId, files) {
+  Array.from(files).forEach(function(file) {
+    var fd = new FormData();
+    fd.append('photo', file);
+    fd.append('caption', file.name.replace(/\.[^.]+$/,''));
+    fd.append('category', 'general');
+    fetch('/story/' + userId + '/upload-photo', { method:'POST', body: fd })
+    .then(r => r.json())
+    .then(function(d) {
+      if (d.ok) {
+        var grid = document.getElementById('photoGrid');
+        var item = document.createElement('div');
+        item.className = 'photo-item';
+        item.innerHTML = '<img src="/static/' + d.path + '"><div class="photo-caption">' + file.name + '</div>';
+        grid.appendChild(item);
+      }
+    });
+  });
+};
+
+// Drag-over styling
+var dz = document.getElementById('dropZone');
+if(dz){
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
+  dz.addEventListener('drop', function(e){
+    e.preventDefault(); dz.classList.remove('drag-over');
+    GSP.uploadPhotos({{ user.id }}, e.dataTransfer.files);
+  });
+}
+</script>
+{% endblock %}

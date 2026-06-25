@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Create Your Story — GSP{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <p class="eyebrow">Step 0 of 5</p>
+    <h1>Create Your Story</h1>
+    <p>Start with some basic details about the person whose story you're preserving.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST" action="{{ url_for('create_story') }}">
+      <div class="form-group">
+        <label class="form-label" for="name">Full Name *</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Ramesh Kumar Sharma" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="birth_year">Birth Year</label>
+          <input type="number" id="birth_year" name="birth_year" placeholder="e.g. 1952" min="1900" max="2020">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="birth_place">Birthplace</label>
+          <input type="text" id="birth_place" name="birth_place" placeholder="e.g. Varanasi, UP">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="occupation">Occupation / Role</label>
+          <input type="text" id="occupation" name="occupation" placeholder="e.g. School Teacher, Farmer">
+        </div>
+      </div>
+
+      <div class="chapter-nav">
+        <a href="{{ url_for('home') }}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Begin Story →</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

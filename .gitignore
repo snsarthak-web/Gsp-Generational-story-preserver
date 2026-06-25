@@ -1,0 +1,19 @@
+# Secret files — NEVER upload these
+.env
+*.db
+instance/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Upload folders (user data)
+static/uploads/photos/*
+static/uploads/audio/*
+static/pdf/*
+
+# Keep folder structure
+!static/uploads/photos/.gitkeep
+!static/uploads/audio/.gitkeep
+!static/pdf/.gitkeep

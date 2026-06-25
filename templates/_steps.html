@@ -1,0 +1,24 @@
+{% set chapters = [
+    ('childhood',  'Childhood',  1),
+    ('education',  'Education',  2),
+    ('career',     'Career',     3),
+    ('family',     'Family',     4),
+    ('wisdom',     'Wisdom',     5),
+] %}
+{% set chapter_states = {
+    'childhood':  1,
+    'education':  2,
+    'career':     3,
+    'family':     4,
+    'wisdom':     5,
+    'biography':  6,
+    'timeline':   6,
+    'family_tree':6,
+} %}
+{% set current_step = chapter_states.get(request.endpoint, 0) %}
+<div class="steps">
+  {% for ep, label, step in chapters %}
+    {% set state = 'active' if step == current_step else ('done' if step < current_step else '') %}
+    <a href="{{ url_for(ep, user_id=user.id) }}" class="step {{ state }}" style="text-decoration:none; color:inherit;">{{ label }}</a>
+  {% endfor %}
+</div>

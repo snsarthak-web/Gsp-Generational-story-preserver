@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Family — {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  {% include "_steps.html" with context %}
+
+  <div class="page-header">
+    <p class="eyebrow">Chapter 4 · Family</p>
+    <h1>The People Who Matter Most</h1>
+    <p>Parents, spouse, children, siblings — the roots and branches of your tree.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="father_name">Father's Name</label>
+          <input type="text" id="father_name" name="father_name" value="{{ story.father_name or '' }}" placeholder="e.g. Ramesh Kumar">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="mother_name">Mother's Name</label>
+          <input type="text" id="mother_name" name="mother_name" value="{{ story.mother_name or '' }}" placeholder="e.g. Sunita Devi">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="spouse_name">Spouse / Partner</label>
+          <input type="text" id="spouse_name" name="spouse_name" value="{{ story.spouse_name or '' }}" placeholder="e.g. Priya Sharma">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="children">Children (comma-separated)</label>
+          <input type="text" id="children" name="children" value="{{ story.children or '' }}" placeholder="e.g. Aarav, Ananya">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="siblings">Siblings (comma-separated)</label>
+        <input type="text" id="siblings" name="siblings" value="{{ story.siblings or '' }}" placeholder="e.g. Rohit, Meena">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="family_notes">Family Story</label>
+        <textarea id="family_notes" name="family_notes" placeholder="Share memories of your family — traditions, festivals, values passed down, important moments together…">{{ story.family_notes or '' }}</textarea>
+      </div>
+
+      <div class="voice-btn-wrap">
+        <button type="button" class="voice-btn" onclick="GSP.voice.toggle('family_notes')">
+          🎙️ <span id="voiceLabel">Dictate</span>
+        </button>
+        <span class="voice-status" id="voiceStatus"></span>
+      </div>
+
+      <div class="chapter-nav">
+        <a href="{{ url_for('career', user_id=user.id) }}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Save & Continue →</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

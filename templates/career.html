@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Career — GSP{% endblock %}
+
+{% block content %}
+<div class="page">
+  {% include "_steps.html" with context %}
+
+  <div class="page-header">
+    <p class="eyebrow">Chapter 3 · Career</p>
+    <h1>A Working Life</h1>
+    <p>The jobs, the struggles, the triumphs — and the work that defined the years.</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+
+      <!-- Small questions ABOVE -->
+      <div class="quick-questions">
+        <p class="qs-heading">Quick Details</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="q_firstjob">What was your first job?</label>
+            <input type="text" id="q_firstjob" name="q_firstjob" maxlength="100"
+              value="{{ story.q_firstjob or '' }}" placeholder="e.g. Junior Engineer at Tata Steel">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="q_career_achievement">What achievement are you most proud of?</label>
+            <input type="text" id="q_career_achievement" name="q_career_achievement" maxlength="120"
+              value="{{ story.q_career_achievement or '' }}" placeholder="e.g. Started my own business in 2005">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="q_advice">What advice would you give to young professionals?</label>
+          <input type="text" id="q_advice" name="q_advice" maxlength="200"
+            value="{{ story.q_advice or '' }}" placeholder="e.g. Be patient, keep learning, and never stop asking questions">
+        </div>
+      </div>
+
+      <hr class="gold-rule">
+
+      <!-- Main textarea -->
+      <div class="form-group">
+        <label class="form-label" for="career">Tell us about your career journey, struggles, and achievements.</label>
+        <p class="form-hint" style="margin-bottom:0.6rem;">Mention years and milestones — they'll appear on your life timeline automatically.</p>
+        <textarea id="career" name="career" class="large" maxlength="3000"
+          placeholder="Describe your career — first job, companies or places worked, roles, major achievements, the hardest moments and how you overcame them…">{{ story.career or '' }}</textarea>
+        <p class="char-count form-hint text-right"><span id="cCount">{{ (story.career or '')|length }}</span> / 3000</p>
+      </div>
+
+      <div class="voice-btn-wrap">
+        <button type="button" class="voice-btn" onclick="GSP.voice.toggle('career')">
+          🎙️ <span id="voiceLabel">Dictate</span>
+        </button>
+        <span class="voice-status" id="voiceStatus"></span>
+      </div>
+
+      <div class="chapter-nav">
+        <a href="{{ url_for('education', user_id=user.id) }}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Save & Continue →</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var ta = document.getElementById('career');
+var cc = document.getElementById('cCount');
+if(ta && cc){ ta.addEventListener('input', function(){ cc.textContent = ta.value.length; }); }
+</script>
+{% endblock %}

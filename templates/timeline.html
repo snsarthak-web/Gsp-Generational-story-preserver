@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% set user_id = user.id %}
+{% block title %}Timeline — {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <p class="eyebrow">Chapter Two · Timeline <span class="ai-badge">✨ AI</span></p>
+    <h1>Life in Years</h1>
+    <p>Key milestones from {{ user.name }}'s journey, in their own order.</p>
+  </div>
+
+  <div class="card">
+    {% if events %}
+      <div class="timeline">
+        {% for ev in events %}
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            {% if ev.year %}
+              <div class="timeline-year">{{ ev.year }}</div>
+            {% endif %}
+            <div class="timeline-title">
+              {% if ev.icon %}{{ ev.icon }} {% endif %}{{ ev.title }}
+            </div>
+            {% if ev.detail %}
+              <div class="timeline-detail">{{ ev.detail }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">No timeline events found. Add more detail about years in your education and career sections.</p>
+    {% endif %}
+
+    <hr class="gold-rule">
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <a href="{{ url_for('biography', user_id=user.id) }}" class="btn btn-ghost btn-sm">← Biography</a>
+      <a href="{{ url_for('family_tree', user_id=user.id) }}" class="btn btn-primary btn-sm">Family Tree →</a>
+      <a href="{{ url_for('export_pdf', user_id=user.id) }}" class="btn btn-ghost btn-sm">📄 Export PDF</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
