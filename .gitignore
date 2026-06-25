@@ -1,4 +1,4 @@
-# Secret files — NEVER upload these
+# Secret files
 .env
 *.db
 instance/

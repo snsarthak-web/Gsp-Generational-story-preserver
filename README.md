@@ -1,6 +1,6 @@
 # GSP — Generational Story Preserver
 
-A Flask web application that helps families preserve life stories — childhood memories, education, career, family history, and hard-earned wisdom — and export them as a beautifully designed **Legacy Book PDF**.
+AI-powered web application for preserving life stories, family history, memories, and wisdom for future generations using Flask and Gemini AI and export them as a beautifully designed **Legacy Book PDF**.
 
 ---
 

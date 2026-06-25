@@ -4,15 +4,12 @@
 {% block content %}
 
 <!-- ================================================================
-  HERO — FULL SCREEN background image, text overlaid on top
-  To change the background: replace static/images/hero-bg.jpg
+  HERO — FULL SCREEN background image, 
   ================================================================ -->
 <section class="hero-full">
 
   <!-- ★ BACKGROUND IMAGE (full screen) ─────────────────────────
-       Replace static/images/hero-bg.jpg with your own photo.
-       Recommended: vintage photo album, family portraits, old diary.
-       Size: at least 1920×900px for best quality.
+       
   ──────────────────────────────────────────────────────────────── -->
   <img
     src="{{ url_for('static', filename='images/hero-bg.png') }}"
@@ -106,11 +103,7 @@
       <p class="sec-title gold">Demo Story Preview</p>
 
       <div class="demo-profile-row">
-        <!-- ★ DEMO AVATAR PLACEHOLDER ──────────────────────────────────
-             To add K.H. Eklavya's photo: place a file named
-             demo_avatar.jpg inside static/images/
-             Recommended size: 200×200px, square crop.
-        ──────────────────────────────────────────────────────────────── -->
+        
         <div class="demo-ava-wrap">
           <img
             src="{{ url_for('static', filename='images/demo_avatar.jpg') }}"
