@@ -25,9 +25,19 @@ BASE_DIR = Path(__file__).parent.resolve()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "gsp-dev-secret-change-in-prod")
-app.config["DATABASE_PATH"] = str(BASE_DIR / "instance" / "gsp.db")
-app.config["UPLOAD_FOLDER"] = str(BASE_DIR / "static" / "uploads")
-app.config["PDF_FOLDER"]    = str(BASE_DIR / "static" / "pdf")
+import os
+app.config["DATABASE_PATH"] = os.environ.get(
+    "DATABASE_PATH",
+    str(BASE_DIR / "instance" / "gsp.db")
+)
+app.config["UPLOAD_FOLDER"] = os.environ.get(
+    "UPLOAD_FOLDER",
+    str(BASE_DIR / "static" / "uploads")
+)
+app.config["PDF_FOLDER"]    = os.environ.get(
+    "PDF_FOLDER",
+    str(BASE_DIR / "static" / "pdf")
+)
 
 # Ensure dirs exist
 for d in [app.config["UPLOAD_FOLDER"] + "/photos",
@@ -591,4 +601,4 @@ def demo_story():
 # Dev runner
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, port=5056)
+    app.run(debug=False, port=5050)
